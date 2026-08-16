@@ -27,7 +27,7 @@
     enable = true;
     ensureProfiles = {
       # Points to your secure file containing the variables
-      environmentFiles = [ "/etc/nixos/wifi.env" ];
+      environmentFiles = [ "./wifi.env" ];
 
       profiles = {
         "home-wifi" = {
