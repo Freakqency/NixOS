@@ -27,7 +27,7 @@
     enable = true;
     ensureProfiles = {
       # Points to your secure file containing the variables
-      environmentFiles = [ "./wifi.env" ];
+      environmentFiles = [ "/home/surya/NixOS/hosts/mayhem/wifi.env" ];
 
       profiles = {
         "home-wifi" = {
