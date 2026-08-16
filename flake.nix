@@ -6,7 +6,7 @@
   };
 
   outputs = { nixpkgs, ... }: {
-    nixosConfigurations.dangerbox =
+    nixosConfigurations.mayhem =
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
 
