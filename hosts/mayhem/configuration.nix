@@ -46,7 +46,10 @@
             psk = "$HOME_PSK";
           };
           ipv4 = {
-            method = "auto";
+            method = "manual";
+            address1 = "192.168.1.10/24";
+            gateway = "192.168.1.254";
+            dns = "192.168.1.254;1.1.1.1;";
           };
         };
       };
