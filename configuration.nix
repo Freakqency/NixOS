@@ -2,13 +2,18 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -18,36 +23,35 @@
 
   # Configure network connections interactively with nmcli or nmtui.
 
-	networking.networkmanager = {
+  networking.networkmanager = {
     enable = true;
     ensureProfiles = {
-    # Points to your secure file containing the variables
-    environmentFiles = [ "/etc/nixos/wifi.env" ]; 
-    
-    profiles = {
-      "home-wifi" = {
+      # Points to your secure file containing the variables
+      environmentFiles = [ "/etc/nixos/wifi.env" ];
+
+      profiles = {
+        "home-wifi" = {
           connection = {
             id = "home-wifi";
             type = "wifi";
-            interface-name="wlo1";
-	    autoconnect = true;
-	    autoconnect-priority = 100;
+            interface-name = "wlo1";
+            autoconnect = true;
+            autoconnect-priority = 100;
           };
           wifi = {
-            ssid = "$HOME_SSID"; 
+            ssid = "$HOME_SSID";
           };
           wifi-security = {
-	          key-mgmt = "wpa-psk";
+            key-mgmt = "wpa-psk";
             psk = "$HOME_PSK";
           };
           ipv4 = {
-            method="auto";
+            method = "auto";
           };
         };
       };
     };
   };
-
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -66,9 +70,6 @@
 
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
-
-
-  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -90,14 +91,19 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.surya = {
-     isNormalUser = true;
-     extraGroups = [ "wheel" "sudo" ]; # Enable ‘sudo’ for the user.
-     packages = with pkgs; [
-       tree
-       vim
-       git
-     ];
-		 openssh.authorizedKeys.keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjzmLn70tqYoirv6hSs0W6gV4U+D5RF5fWMKd5KjSA88zYgqtr1HHpW1Gqg3grvY1sEuZuiYwtOsxvuGtoSTyL3PvjtxoVqWXQIsj0VgmTGf0zuJ6iWUmL8vy9oZ5sICtCgapq+NzbLIo4cbE4CbqpZxeWVHGY4jkj1AiUTJF0am5cLl30TVkUf8YuWIZ0bxrd9mavZWDan8intXM/pqu1yjJGc/WjQSR7dQx+ABhzdkvWcQFZmcHqZBwTkpaV823M7mLH3qcVqMPS2qsw4ToNhv8MYsNv3pPYYHcGK/loS2+PVjWKJv5kG6V1X2/VeyilQtQzAeBJM76ucGQMGuL5c2V7l0r1I/oA3ktjgx/fAC9qy4U0nCApYLJ8aXWZOl7fzit5OcxZkKl9fuqnuFiKiXSPlNoXQYEDmh89GU19kW0v0H7Z3xIwURjbEwxRszPwislQD9pEuBrMzeER/4hZpHJFUzFCalCl+xGbugD2MJ24HblOGWVBpC4xvcnULds= surya@MacBookAir.attlocal.net"];
+    isNormalUser = true;
+    extraGroups = [
+      "wheel"
+      "sudo"
+    ]; # Enable ‘sudo’ for the user.
+    packages = with pkgs; [
+      tree
+      vim
+      git
+    ];
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjzmLn70tqYoirv6hSs0W6gV4U+D5RF5fWMKd5KjSA88zYgqtr1HHpW1Gqg3grvY1sEuZuiYwtOsxvuGtoSTyL3PvjtxoVqWXQIsj0VgmTGf0zuJ6iWUmL8vy9oZ5sICtCgapq+NzbLIo4cbE4CbqpZxeWVHGY4jkj1AiUTJF0am5cLl30TVkUf8YuWIZ0bxrd9mavZWDan8intXM/pqu1yjJGc/WjQSR7dQx+ABhzdkvWcQFZmcHqZBwTkpaV823M7mLH3qcVqMPS2qsw4ToNhv8MYsNv3pPYYHcGK/loS2+PVjWKJv5kG6V1X2/VeyilQtQzAeBJM76ucGQMGuL5c2V7l0r1I/oA3ktjgx/fAC9qy4U0nCApYLJ8aXWZOl7fzit5OcxZkKl9fuqnuFiKiXSPlNoXQYEDmh89GU19kW0v0H7Z3xIwURjbEwxRszPwislQD9pEuBrMzeER/4hZpHJFUzFCalCl+xGbugD2MJ24HblOGWVBpC4xvcnULds= surya@MacBookAir.attlocal.net"
+    ];
   };
 
   # programs.firefox.enable = true;
@@ -121,12 +127,12 @@
 
   # Enable the OpenSSH daemon.
   services.openssh = {
-		enable = true;
-		settings = {
-			PasswordAuthentication = false;
-			PermitRootLogin = "no";
-		};
-	};
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 22 ];
@@ -159,4 +165,3 @@
   system.stateVersion = "26.05"; # Did you read the comment?
 
 }
-
