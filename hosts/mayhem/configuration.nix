@@ -109,6 +109,7 @@
       gh
       python3
       uv
+      unzip
       nodejs
     ];
     openssh.authorizedKeys.keys = [
