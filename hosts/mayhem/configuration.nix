@@ -6,6 +6,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -102,19 +103,10 @@
     packages = with pkgs; [
       tree
       vim
-      git
       podman
       qemu
       usbutils
-      gh
-      htop
-      ripgrep
-      jq
-      tmux
-      python3
-      uv
       unzip
-      nodejs
     ];
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjzmLn70tqYoirv6hSs0W6gV4U+D5RF5fWMKd5KjSA88zYgqtr1HHpW1Gqg3grvY1sEuZuiYwtOsxvuGtoSTyL3PvjtxoVqWXQIsj0VgmTGf0zuJ6iWUmL8vy9oZ5sICtCgapq+NzbLIo4cbE4CbqpZxeWVHGY4jkj1AiUTJF0am5cLl30TVkUf8YuWIZ0bxrd9mavZWDan8intXM/pqu1yjJGc/WjQSR7dQx+ABhzdkvWcQFZmcHqZBwTkpaV823M7mLH3qcVqMPS2qsw4ToNhv8MYsNv3pPYYHcGK/loS2+PVjWKJv5kG6V1X2/VeyilQtQzAeBJM76ucGQMGuL5c2V7l0r1I/oA3ktjgx/fAC9qy4U0nCApYLJ8aXWZOl7fzit5OcxZkKl9fuqnuFiKiXSPlNoXQYEDmh89GU19kW0v0H7Z3xIwURjbEwxRszPwislQD9pEuBrMzeER/4hZpHJFUzFCalCl+xGbugD2MJ24HblOGWVBpC4xvcnULds= surya@MacBookAir.attlocal.net"
@@ -150,10 +142,29 @@
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
-  # environment.systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
-  # ];
+  environment.systemPackages =
+  let
+    agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  in
+  [
+    agents.codex
+    agents.claude-code
+  ]
+  ++ (with pkgs; [
+    bun
+    git
+    nodejs_24
+    gh
+    gitleaks
+    tmux
+    jq
+    ripgrep
+    fd
+    btop
+    python3
+    uv
+  ]);
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
