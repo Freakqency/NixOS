@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs = { nixpkgs, ... }@inputs: {
@@ -12,6 +17,7 @@
       specialArgs = { inherit inputs; };
       modules = [
         ./hosts/mayhem/configuration.nix
+        inputs.home-manager.nixosModules.home-manager
       ];
     };
   };

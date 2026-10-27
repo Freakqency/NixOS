@@ -215,4 +215,11 @@
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "26.05"; # Did you read the comment?
 
+  home-manager = {
+    useGlobalPkgs = true;     # use the system's pkgs instead of building a second copy
+    useUserPackages = true;   # install into /etc/profiles/per-user/surya, like users.users.*.packages
+    users.surya = import ./home.nix;
+  };
+
+
 }
