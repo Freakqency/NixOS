@@ -186,7 +186,7 @@
   };
 
   services.logind.settings.Login = {
-      HandleSwitch = "ignore";
+      HandleLidSwitch = "ignore";
       HandleLidSwitchExternalPower = "ignore";
       HandleLidSwitchDocked = "ignore";
   };
