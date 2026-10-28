@@ -185,6 +185,18 @@
     };
   };
 
+  services.logind.settings.Login = {
+      HandleSwitch = "ignore";
+      HandleLidSwitchExternalPower = "ignore";
+      HandleLidSwitchDocked = "ignore";
+  };
+
+  services.thermald.enable =  true;
+
+  services.journald.extraConfig = ''
+      SystemMaxUse = 1G
+  '';
+
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 22 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -221,5 +233,10 @@
     users.surya = import ./home.nix;
   };
 
+  zramSwap = {
+      enable = true;
+      memoryPercent = 50;
+      algorithm = zstd;
+  };
 
 }
