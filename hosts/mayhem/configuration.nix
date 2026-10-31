@@ -60,6 +60,14 @@
     };
   };
 
+  networking.firewall.interfaces.incusbr0 = {
+    allowedUDPPorts = [
+      53
+      67
+    ];
+    allowedTCPPorts = [ 53 ];
+  };
+
   # Set your time zone.
   time.timeZone = "America/Chicago";
 
@@ -100,6 +108,7 @@
   users.users.surya = {
     isNormalUser = true;
     extraGroups = [
+      "incus-admin"
       "wheel"
       "sudo"
     ]; # Enable ‘sudo’ for the user.
@@ -114,6 +123,15 @@
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjzmLn70tqYoirv6hSs0W6gV4U+D5RF5fWMKd5KjSA88zYgqtr1HHpW1Gqg3grvY1sEuZuiYwtOsxvuGtoSTyL3PvjtxoVqWXQIsj0VgmTGf0zuJ6iWUmL8vy9oZ5sICtCgapq+NzbLIo4cbE4CbqpZxeWVHGY4jkj1AiUTJF0am5cLl30TVkUf8YuWIZ0bxrd9mavZWDan8intXM/pqu1yjJGc/WjQSR7dQx+ABhzdkvWcQFZmcHqZBwTkpaV823M7mLH3qcVqMPS2qsw4ToNhv8MYsNv3pPYYHcGK/loS2+PVjWKJv5kG6V1X2/VeyilQtQzAeBJM76ucGQMGuL5c2V7l0r1I/oA3ktjgx/fAC9qy4U0nCApYLJ8aXWZOl7fzit5OcxZkKl9fuqnuFiKiXSPlNoXQYEDmh89GU19kW0v0H7Z3xIwURjbEwxRszPwislQD9pEuBrMzeER/4hZpHJFUzFCalCl+xGbugD2MJ24HblOGWVBpC4xvcnULds= surya@MacBookAir.attlocal.net"
     ];
+  };
+
+  users.groups.inatorium = { };
+  users.users.inatorium = {
+    isSystemUser = true;
+    group = "inatorium";
+    home = "/var/lib/inatorium";
+    createHome = true;
+    extraGroups = [ "incus-admin" ];
   };
 
   nix.settings = {
@@ -139,6 +157,61 @@
   virtualisation.podman = {
     enable = true;
     defaultNetwork.settings.dns_enabled = true;
+  };
+
+  virtualisation.incus = {
+    enable = true;
+    preseed = {
+      storage_pools = [
+        {
+          name = "default";
+          driver = "btrfs";
+          config.size = "60GiB";
+        }
+      ];
+      networks = [
+        {
+          name = "incusbr0";
+          type = "bridge";
+          config = {
+            "ipv4.address" = "10.42.0.1/24";
+            "ipv4.nat" = "true";
+            "ipv6.address" = "none";
+          };
+        }
+      ];
+      profiles = [
+        {
+          name = "default";
+          devices = {
+            root = {
+              path = "/";
+              pool = "default";
+              type = "disk";
+            };
+            eth0 = {
+              name = "eth0";
+              network = "incusbr0";
+              type = "nic";
+            };
+          };
+        }
+        {
+          name = "factory";
+          config = {
+            "limits.cpu" = "2";
+            "limits.memory" = "4GiB";
+            "limits.processes" = "4096";
+          };
+          devices.root = {
+            path = "/";
+            pool = "default";
+            type = "disk";
+            size = "20GiB";
+          };
+        }
+      ];
+    };
   };
 
   # Helps with some third-party binary compatibility.

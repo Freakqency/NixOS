@@ -1,5 +1,4 @@
-_:
-{
+_: {
   home.stateVersion = "26.05";
 
   programs.git = {
@@ -9,8 +8,8 @@ _:
       user.email = "36022725+Freakqency@users.noreply.github.com";
       init.defaultBranch = "main";
       alias.st = "status";
-      alias.lg = "log --oneline -3"
-      alias.br = "branch"
+      alias.lg = "log --oneline -3";
+      alias.br = "branch";
     };
   };
 
