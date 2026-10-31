@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   home.stateVersion = "26.05";
 
@@ -8,6 +8,9 @@
       user.name = "Freakqency";
       user.email = "36022725+Freakqency@users.noreply.github.com";
       init.defaultBranch = "main";
+      alias.st = "status";
+      alias.lg = "log --oneline -3"
+      alias.br = "branch"
     };
   };
 

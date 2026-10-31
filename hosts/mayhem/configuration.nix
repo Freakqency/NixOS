@@ -3,8 +3,6 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 {
-  config,
-  lib,
   pkgs,
   inputs,
   ...
@@ -54,12 +52,12 @@
   networking.nftables.enable = true;
   services.openssh.openFirewall = false;
   networking.firewall = {
-      enable = true;
-      interfaces = {
-          wlo1.allowedTCPPorts = [ 22 ];
-          eno1.allowedTCPPorts = [ 22 ];
-          tailscale0.allowedTCPPorts = [ 22 ];
-      };
+    enable = true;
+    interfaces = {
+      wlo1.allowedTCPPorts = [ 22 ];
+      eno1.allowedTCPPorts = [ 22 ];
+      tailscale0.allowedTCPPorts = [ 22 ];
+    };
   };
 
   # Set your time zone.
@@ -119,7 +117,10 @@
   };
 
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     auto-optimise-store = true;
     extra-substituters = [ "https://cache.numtide.com" ];
     extra-trusted-public-keys = [
@@ -148,28 +149,30 @@
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages =
-  let
-    agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  in
-  [
-    agents.codex
-    agents.claude-code
-  ]
-  ++ (with pkgs; [
-    bun
-    git
-    nodejs_24
-    gh
-    gitleaks
-    tmux
-    jq
-    ripgrep
-    fd
-    btop
-    python3
-    uv
-  ]);
-
+    let
+      agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+    in
+    [
+      agents.codex
+      agents.claude-code
+    ]
+    ++ (with pkgs; [
+      nixfmt
+      statix
+      deadnix
+      bun
+      git
+      nodejs_24
+      gh
+      gitleaks
+      tmux
+      jq
+      ripgrep
+      fd
+      btop
+      python3
+      uv
+    ]);
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -191,15 +194,15 @@
   };
 
   services.logind.settings.Login = {
-      HandleLidSwitch = "ignore";
-      HandleLidSwitchExternalPower = "ignore";
-      HandleLidSwitchDocked = "ignore";
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+    HandleLidSwitchDocked = "ignore";
   };
 
-  services.thermald.enable =  true;
+  services.thermald.enable = true;
 
   services.journald.extraConfig = ''
-      SystemMaxUse = 1G
+    SystemMaxUse = 1G
   '';
 
   # Open ports in the firewall.
@@ -231,15 +234,15 @@
   system.stateVersion = "26.05"; # Did you read the comment?
 
   home-manager = {
-    useGlobalPkgs = true;     # use the system's pkgs instead of building a second copy
-    useUserPackages = true;   # install into /etc/profiles/per-user/surya, like users.users.*.packages
+    useGlobalPkgs = true; # use the system's pkgs instead of building a second copy
+    useUserPackages = true; # install into /etc/profiles/per-user/surya, like users.users.*.packages
     users.surya = import ./home.nix;
   };
 
   zramSwap = {
-      enable = true;
-      memoryPercent = 50;
-      algorithm = "zstd";
+    enable = true;
+    memoryPercent = 50;
+    algorithm = "zstd";
   };
 
 }
