@@ -48,9 +48,9 @@
           };
         };
       };
-      wifi.macAddress = "permanent";
     };
   };
+  networking.networkmanager.wifi.macAddress = "permanent";
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
