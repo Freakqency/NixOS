@@ -51,6 +51,16 @@
     };
   };
   networking.networkmanager.wifi.macAddress = "permanent";
+  networking.nftables.enable = true;
+  services.openssh.openFirewall = false;
+  networking.firewall = {
+      enable = true;
+      interfaces = {
+          wlo1.allowedTCPPorts = [ 22 ];
+          eno1.allowedTCPPorts = [ 22 ];
+          tailscale0.allowedTCPPorts = [ 22 ];
+      };
+  };
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -193,10 +203,8 @@
   '';
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
