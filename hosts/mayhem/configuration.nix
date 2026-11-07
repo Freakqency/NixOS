@@ -67,6 +67,17 @@
     ];
     allowedTCPPorts = [ 53 ];
   };
+  networking.nftables.tables.inatorium-egress = {
+    family = "inet";
+    content = ''
+      chain forward {
+        type filter hook forward priority filter; policy accept;
+        iifname "incusbr0" ct state new log prefix "inatorium-egress: "
+        iifname "incusbr0" ip daddr { 10.0.0.0/8, 100.64.0.0/10, 169.254.0.0/16, 172.16.0.0/12, 192.168.0.0/16 } drop
+        iifname "incusbr0" ip6 daddr fd7a:115c:a1e0::/48 drop
+      }
+    '';
+  };
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
