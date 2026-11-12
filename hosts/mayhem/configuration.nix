@@ -28,11 +28,12 @@
       # Points to your secure file containing the variables
       environmentFiles = [ "/home/surya/NixOS/hosts/mayhem/wifi.env" ];
 
-      # SSIDs and PSKs live in wifi.env as <VAR>_SSID / <VAR>_PSK (#33).
-      # NetworkManager tries the highest priority first and falls down the list.
+      # SSIDs and PSKs live in wifi.env (#33). The gateway uses one SSID on
+      # both bands, so its two profiles differ by band. NetworkManager tries
+      # the highest priority first and falls down the list.
       profiles =
         let
-          network = id: priority: var: {
+          network = id: priority: ssid: psk: band: {
             connection = {
               inherit id;
               type = "wifi";
@@ -41,18 +42,22 @@
               autoconnect-priority = priority;
               autoconnect-retries = 0; # retry forever: nobody is there to fix it
             };
-            wifi.ssid = "$" + var + "_SSID";
+            wifi = {
+              ssid = "$" + ssid;
+              inherit band; # "bg" = 2.4 GHz, "a" = 5 GHz
+            };
             wifi-security = {
               key-mgmt = "wpa-psk";
-              psk = "$" + var + "_PSK";
+              psk = "$" + psk;
             };
           };
         in
         {
-          home-wifi = network "home-wifi" 100 "HOME"; # gateway 2.4 GHz
-          gateway-5g = network "gateway-5g" 90 "GW5";
-          extender-2g = network "extender-2g" 80 "EXT";
-          extender-5g = network "extender-5g" 10 "EXT5"; # flaps: last resort
+          # Gateway 2.4 GHz first: stronger here than its 5 GHz (signal 80 vs 70)
+          home-wifi = network "home-wifi" 100 "HOME_SSID" "HOME_PSK" "bg";
+          gateway-5g = network "gateway-5g" 90 "HOME_SSID" "HOME_PSK" "a";
+          extender-2g = network "extender-2g" 80 "EXT_SSID" "EXT_PSK" "bg";
+          extender-5g = network "extender-5g" 10 "EXT5_SSID" "EXT_PSK" "a"; # flaps: last resort
         };
     };
   };
