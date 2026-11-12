@@ -28,24 +28,32 @@
       # Points to your secure file containing the variables
       environmentFiles = [ "/home/surya/NixOS/hosts/mayhem/wifi.env" ];
 
-      profiles = {
-        "home-wifi" = {
-          connection = {
-            id = "home-wifi";
-            type = "wifi";
-            interface-name = "wlo1";
-            autoconnect = true;
-            autoconnect-priority = 100;
+      # SSIDs and PSKs live in wifi.env as <VAR>_SSID / <VAR>_PSK (#33).
+      # NetworkManager tries the highest priority first and falls down the list.
+      profiles =
+        let
+          network = id: priority: var: {
+            connection = {
+              inherit id;
+              type = "wifi";
+              interface-name = "wlo1";
+              autoconnect = true;
+              autoconnect-priority = priority;
+              autoconnect-retries = 0; # retry forever: nobody is there to fix it
+            };
+            wifi.ssid = "$" + var + "_SSID";
+            wifi-security = {
+              key-mgmt = "wpa-psk";
+              psk = "$" + var + "_PSK";
+            };
           };
-          wifi = {
-            ssid = "$HOME_SSID";
-          };
-          wifi-security = {
-            key-mgmt = "wpa-psk";
-            psk = "$HOME_PSK";
-          };
+        in
+        {
+          home-wifi = network "home-wifi" 100 "HOME"; # gateway 2.4 GHz
+          gateway-5g = network "gateway-5g" 90 "GW5";
+          extender-2g = network "extender-2g" 80 "EXT";
+          extender-5g = network "extender-5g" 10 "EXT5"; # flaps: last resort
         };
-      };
     };
   };
   networking.networkmanager.wifi.macAddress = "permanent";
