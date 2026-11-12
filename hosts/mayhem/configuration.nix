@@ -213,6 +213,8 @@
             "limits.cpu" = "2";
             "limits.memory" = "4GiB";
             "limits.processes" = "4096";
+            # The CLIs' inner sandboxes need a fresh /proc (#8)
+            "security.nesting" = "true";
           };
           devices.root = {
             path = "/";
